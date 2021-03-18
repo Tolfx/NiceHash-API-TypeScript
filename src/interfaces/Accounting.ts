@@ -26,3 +26,7 @@ export interface DepositAdress {
         }
     ]
 }
+
+export interface AccountWithdraws {
+    id: string;
+}
