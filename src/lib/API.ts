@@ -3,7 +3,7 @@ import { Currency as Currency } from "../interfaces/types/Currency";
 import APIError from "../interfaces/APIError";
 import { BalanceOnCurrency, DepositAdress, AccountWithdraws } from "../interfaces/Accounting";
 import { ActiverWorkers } from "../interfaces/Miner"
-import { API_Key, Secret_API_Key, API_Domain } from "../Config"
+import { API_Key, Secret_API_Key, API_Domain, Locale, Organization_ID } from "../Config"
 //@ts-ignore
 import CryptoJS from 'crypto-js'
 import qs from 'qs'
@@ -150,7 +150,7 @@ class Api {
 
 }
 
-let api = new Api("swe", API_Domain, API_Key, Secret_API_Key, "");
+let api = new Api(Locale, API_Domain, API_Key, Secret_API_Key, Organization_ID);
 
 export async function Account2Balance(currency: Currency): Promise<BalanceOnCurrency>
 {
