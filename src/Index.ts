@@ -1,8 +1,15 @@
 require("dotenv").config();
 import { Webhook } from "discord.js";
-import { Version } from "./Config";
+import { Version, API_Key, Secret_API_Key } from "./Config";
 import { stripIndent } from "common-tags";
 import { Account2Balance, AccountDepositAddress, GetCurrentActiveWorkers, AccountWithdraw } from "./lib/API";
+
+if(API_Key == "" || Secret_API_Key == "")
+{
+    console.log(`Please ensure that you have insert all credentials.`);
+    process.exit(0);
+}
+
 
 console.log(`Current version: ${Version}`);
 console.log(stripIndent`
