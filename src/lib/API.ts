@@ -1,6 +1,7 @@
 import request from "request-promise-native";
 import { Currency as Currency } from "../interfaces/types/Currency";
-import { BalanceOnCurrency, DepositAdress } from "../interfaces/Accounting";
+import APIError from "../interfaces/APIError";
+import { BalanceOnCurrency, DepositAdress, AccountWithdraws } from "../interfaces/Accounting";
 import { ActiverWorkers } from "../interfaces/Miner"
 import { API_Key, Secret_API_Key, API_Domain } from "../Config"
 //@ts-ignore
@@ -121,28 +122,28 @@ class Api {
 
 	async get(path: string, options: any): Promise<any>  {
         return new Promise(async (resolve, reject) => {
-            let call = await this.apiCall('GET', path, options).catch((e: any) => reject(e));
+            let call = await this.apiCall('GET', path, options).catch((e: APIError) => reject(e));
             resolve(call)
         });
 	}
 
 	async post(path: string, options: any): Promise<any>  {
         return new Promise(async (resolve, reject) => {
-            let call = await this.apiCall('POST', path, options).catch((e: any) => reject(e));
+            let call = await this.apiCall('POST', path, options).catch((e: APIError) => reject(e));
             resolve(call)
         });
 	}
 
 	async put(path: string, options: any): Promise<any>  {
         return new Promise(async (resolve, reject) => {
-            let call = await this.apiCall('PUT', path, options).catch((e: any) => reject(e));
+            let call = await this.apiCall('PUT', path, options).catch((e: APIError) => reject(e));
             resolve(call)
         });
 	}
 
 	async delete(path: string, options: any): Promise<any>  {
         return new Promise(async (resolve, reject) => {
-            let call = await this.apiCall('DELETE', path, options).catch((e: any) => reject(e));
+            let call = await this.apiCall('DELETE', path, options).catch((e: APIError) => reject(e));
             resolve(call)
         });
 	}
@@ -156,7 +157,7 @@ export async function Account2Balance(currency: Currency): Promise<BalanceOnCurr
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/accounting/account2/";
         await api.getTime();
-        let result: BalanceOnCurrency = await api.get(`${endpoint}${currency}`, "").catch(e => reject(e));
+        let result: BalanceOnCurrency = await api.get(`${endpoint}${currency}`, "").catch((e: APIError) => reject(e));
         resolve(result);
     });
 }
@@ -166,7 +167,7 @@ export async function AccountDepositAddress(currency: Currency): Promise<Deposit
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/accounting/depositAddresses";
         await api.getTime();
-        let result: DepositAdress = await api.get(`${endpoint}?currency=${currency}`, "").catch(e => reject(e));
+        let result: DepositAdress = await api.get(`${endpoint}?currency=${currency}`, "").catch((e: APIError) => reject(e));
         resolve(result);
     });
 }
@@ -176,23 +177,23 @@ export async function GetCurrentActiveWorkers(): Promise<ActiverWorkers>
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/mining/rigs/activeWorkers";
         await api.getTime();
-        let result: ActiverWorkers = await api.get(`${endpoint}`, "").catch(e => reject(e));
+        let result: ActiverWorkers = await api.get(`${endpoint}`, "").catch((e: APIError) => reject(e));
         resolve(result);
     });
 }
 
-export async function AccountWithdraw(currency: Currency, amount: number, addressId: string): Promise<any>
+export async function AccountWithdraw(currency: Currency, amount: number, addressId: string): Promise<AccountWithdraws>
 {
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/accounting/withdrawal";
         await api.getTime();
-        let result: any = await api.post(`${endpoint}`, { 
+        let result: AccountWithdraws = await api.post(`${endpoint}`, { 
             body: {
                 currency,
                 amount,
                 withdrawalAddressId: addressId
             }
-        }).catch(e => reject(e));
+        }).catch((e: APIError) => reject(e));
 
         resolve(result);
     });
