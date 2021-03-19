@@ -10,6 +10,12 @@ import qs from 'qs'
 
 // Found on https://github.com/nicehash/rest-clients-demo/blob/master/javascript/api.js
 // Thanks <3
+
+interface Options { 
+    body?: object;
+    query?: object;
+    time?: object
+}
 class Api {
 
     private host;
@@ -120,28 +126,28 @@ class Api {
         })
 	}
 
-	async get(path: string, options: any): Promise<any>  {
+	async get(path: string, options?: Options): Promise<any>  {
         return new Promise(async (resolve, reject) => {
             let call = await this.apiCall('GET', path, options).catch((e: APIError) => reject(e));
             resolve(call)
         });
 	}
 
-	async post(path: string, options: any): Promise<any>  {
+	async post(path: string, options?: Options): Promise<any>  {
         return new Promise(async (resolve, reject) => {
             let call = await this.apiCall('POST', path, options).catch((e: APIError) => reject(e));
             resolve(call)
         });
 	}
 
-	async put(path: string, options: any): Promise<any>  {
+	async put(path: string, options?: Options): Promise<any>  {
         return new Promise(async (resolve, reject) => {
             let call = await this.apiCall('PUT', path, options).catch((e: APIError) => reject(e));
             resolve(call)
         });
 	}
 
-	async delete(path: string, options: any): Promise<any>  {
+	async delete(path: string, options?: Options): Promise<any>  {
         return new Promise(async (resolve, reject) => {
             let call = await this.apiCall('DELETE', path, options).catch((e: APIError) => reject(e));
             resolve(call)
@@ -157,7 +163,7 @@ export async function Account2Balance(currency: Currency): Promise<BalanceOnCurr
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/accounting/account2/";
         await api.getTime();
-        let result: BalanceOnCurrency = await api.get(`${endpoint}${currency}`, "").catch((e: APIError) => reject(e));
+        let result: BalanceOnCurrency = await api.get(`${endpoint}${currency}`, {}).catch((e: APIError) => reject(e));
         resolve(result);
     });
 }
@@ -167,7 +173,7 @@ export async function AccountDepositAddress(currency: Currency): Promise<Deposit
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/accounting/depositAddresses";
         await api.getTime();
-        let result: DepositAdress = await api.get(`${endpoint}?currency=${currency}`, "").catch((e: APIError) => reject(e));
+        let result: DepositAdress = await api.get(`${endpoint}?currency=${currency}`, {}).catch((e: APIError) => reject(e));
         resolve(result);
     });
 }
@@ -177,7 +183,7 @@ export async function GetCurrentActiveWorkers(): Promise<ActiverWorkers>
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/mining/rigs/activeWorkers";
         await api.getTime();
-        let result: ActiverWorkers = await api.get(`${endpoint}`, "").catch((e: APIError) => reject(e));
+        let result: ActiverWorkers = await api.get(`${endpoint}`, {}).catch((e: APIError) => reject(e));
         resolve(result);
     });
 }
@@ -187,7 +193,7 @@ export async function AccountWithdraw(currency: Currency, amount: number, addres
     return new Promise(async (resolve, reject) => {
         const endpoint: string = "/main/api/v2/accounting/withdrawal";
         await api.getTime();
-        let result: AccountWithdraws = await api.post(`${endpoint}`, { 
+        let result: AccountWithdraws = await api.post(`${endpoint}`, {
             body: {
                 currency,
                 amount,
