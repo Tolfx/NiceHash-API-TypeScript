@@ -5,11 +5,10 @@ import { stripIndent } from "common-tags";
 import log from "./lib/Logger";
 import CMDHandler from "./CMD/Handler";
 import NiceHash from "./functions/NiceHash";
-import Loop_NiceHash from "./functions/Loop-NiceHash";
 
 if(API_Key == "" || Secret_API_Key == "")
 {
-    console.log(`Please ensure that you have insert all credentials.`);
+    log.error(`Please ensure that you have insert all credentials.`);
     process.exit(0);
 }
 
@@ -24,14 +23,14 @@ log.verbos("\n" + stripIndent`
 log.info(`Current version: ${Version}`);
 let cmd = new CMDHandler();
 
-function closeLoop(i: NodeJS.Timeout): void
+function closeLoop(i?: NodeJS.Timeout): void
 {
     cmd.isPressed("ctrl", "x", (ispressed) => {
-
         if(ispressed)
         {
             log.verbos(`Closing down loop..`)
-            clearInterval(i)
+            if(i)
+                clearInterval(i);
             start();
         }
     });
@@ -66,24 +65,23 @@ function start()
             switch(a.split(" ")[0])
             {
                 case "1": {
-                    let i = await Loop_NiceHash.CurrentActiveWorkers(parseInt(temp)*1000);
+                    let i = setInterval(async () => {
+                        await NiceHash.UnpaidAmount();
+                    }, parseInt(temp)*1000)
                     log.info(`Stop by holding CTRL+X`);
                     closeLoop(i);
                     break;
                 }
-                case "2": cmd.clearScreen(); start(); break;
 
                 default: log.error(`Invalid option..`); start(); break;
             }
-            
-
         }
 
         else
             switch(a)
             {
-                case "1": await NiceHash.CurrentActiveWorkers(); cmd.notify(); start(); break;
-                case "2": cmd.clearScreen(); start(); break;
+                case "1": { await NiceHash.UnpaidAmount(); cmd.notify(); start(); break; }
+                case "2": { cmd.clearScreen(); start(); break; }
 
 
                 default: log.error(`Invalid option..`); start(); break;

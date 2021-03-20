@@ -2,7 +2,7 @@ import { GetCurrentActiveWorkers } from "../lib/API";
 import log from "../lib/Logger";
 
 let NiceHash = {
-    CurrentActiveWorkers: async () => {
+    UnpaidAmount: async () => {
         return new Promise((resolve, reject) => {
             GetCurrentActiveWorkers().then(r => {
                 if(r.workers.length > 0)
